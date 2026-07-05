@@ -39,7 +39,6 @@ window.CalorieControllers.createModuleNavigationController = function createModu
       window.history.pushState(null, "", `#${getRouteName(target.id)}`);
     }
 
-    window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
   buttons.forEach((button) => {
