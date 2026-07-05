@@ -27,7 +27,15 @@
     breakfastList: document.querySelector("#breakfastList"),
     lunchList: document.querySelector("#lunchList"),
     dinnerList: document.querySelector("#dinnerList"),
-    snackList: document.querySelector("#snackList")
+    snackList: document.querySelector("#snackList"),
+    chooserBudget: document.querySelector("#chooserBudget"),
+    chooserCategories: document.querySelector("#chooserCategories"),
+    chooserMeals: Array.from(document.querySelectorAll("#chooserMeals button")),
+    chooserStatus: document.querySelector("#chooserStatus"),
+    generateRecommendation: document.querySelector("#generateRecommendation"),
+    recommendationSummary: document.querySelector("#recommendationSummary"),
+    recommendationResult: document.querySelector("#recommendationResult"),
+    addRecommendationToPlan: document.querySelector("#addRecommendationToPlan")
   };
 
   const calculator = window.CalorieControllers.createCalculatorController({
@@ -56,9 +64,20 @@
     getCurrentEntry: calculator.getEntry
   });
 
+  const recommender = window.CalorieControllers.createRecommendationController({
+    foods,
+    categories,
+    elements,
+    searchService,
+    portionService,
+    formatNumber,
+    onAddToPlan: planner.addEntries
+  });
+
   elements.foodSearch.addEventListener("input", () => calculator.render());
 
   library.render();
   calculator.render();
   planner.render();
+  recommender.render();
 })();

@@ -28,6 +28,11 @@
           <strong>今日计划</strong>
           <em>早餐午餐晚餐宵夜</em>
         </button>
+        <button class="module-tile" type="button" data-target="selectorSection">
+          <span class="module-icon">🍽️</span>
+          <strong>帮我选</strong>
+          <em>按热量和品类推荐</em>
+        </button>
         <button class="module-tile" type="button" data-target="librarySection">
           <span class="module-icon">🥢</span>
           <strong>美食库</strong>
@@ -96,6 +101,49 @@
           </div>
           <button id="addToPlan" class="primary-action" type="button">添加到计划</button>
         </div>
+      </section>
+
+      <section id="selectorSection" class="feature-card chooser-card" aria-label="帮我选">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">帮我选</p>
+            <h2>不知道吃什么，就用热量预算来选</h2>
+          </div>
+          <span id="recommendationSummary" class="soft-badge" hidden>0 kcal</span>
+        </div>
+
+        <div class="chooser-layout">
+          <div class="field">
+            <label for="chooserBudget">预计今天热量</label>
+            <div class="input-unit">
+              <input id="chooserBudget" type="number" min="1" step="50" value="2000" />
+              <span>kcal</span>
+            </div>
+          </div>
+
+          <div class="field">
+            <label>想吃的品类</label>
+            <div id="chooserCategories" class="choice-chips" aria-label="选择想吃的品类"></div>
+          </div>
+
+          <div class="field">
+            <label>选择要安排的餐次</label>
+            <div id="chooserMeals" class="choice-chips" aria-label="选择餐次">
+              <button class="active" type="button" data-meal="breakfast">早餐</button>
+              <button class="active" type="button" data-meal="lunch">午餐</button>
+              <button class="active" type="button" data-meal="dinner">晚餐</button>
+              <button type="button" data-meal="snack">宵夜</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="chooser-action-row">
+          <p id="chooserStatus" class="chooser-status">选择品类和餐次，系统会推荐不超过预算的美食。</p>
+          <button id="generateRecommendation" class="primary-action" type="button">帮我选一组</button>
+        </div>
+
+        <div id="recommendationResult" class="recommendation-grid" aria-live="polite"></div>
+        <button id="addRecommendationToPlan" class="secondary-action" type="button" hidden>加入今日计划</button>
       </section>
 
       <section id="planSection" class="feature-card plan-card" aria-label="今日计划">
@@ -170,6 +218,7 @@
     <script src="js/controllers/libraryController.js"></script>
     <script src="js/controllers/moduleNavigationController.js"></script>
     <script src="js/controllers/plannerController.js"></script>
+    <script src="js/controllers/recommendationController.js"></script>
     <script src="js/app.js"></script>
   </body>
 </html>

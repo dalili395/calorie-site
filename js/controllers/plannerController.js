@@ -120,6 +120,18 @@ window.CalorieControllers.createPlannerController = function createPlannerContro
     render();
   }
 
+  function addEntries(entries) {
+    entries.forEach((entry, index) => {
+      if (!plan[entry.meal]) return;
+      plan[entry.meal].push({
+        ...entry,
+        id: `${Date.now()}-${entry.meal}-${entry.foodId}-${index}`
+      });
+    });
+    savePlan();
+    render();
+  }
+
   elements.mealButtons.forEach((button) => {
     button.addEventListener("click", () => {
       selectedMeal = button.dataset.meal;
@@ -130,6 +142,7 @@ window.CalorieControllers.createPlannerController = function createPlannerContro
   elements.targetCalories.addEventListener("input", renderTotals);
 
   return {
+    addEntries,
     render
   };
 };

@@ -132,7 +132,7 @@ h3 {
 
 .module-grid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 14px;
   margin: 18px 0;
 }
@@ -479,6 +479,129 @@ select:focus {
   color: #fff;
 }
 
+.chooser-layout {
+  display: grid;
+  grid-template-columns: minmax(220px, 0.7fr) minmax(0, 1.3fr);
+  gap: 16px 18px;
+  align-items: start;
+}
+
+.chooser-layout .field:first-child {
+  grid-row: span 2;
+}
+
+.choice-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.choice-chips button {
+  min-height: 38px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: #fff;
+  color: var(--ink);
+  padding: 0 14px;
+  cursor: pointer;
+}
+
+.choice-chips button.active {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: #fff;
+}
+
+.chooser-action-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 2px;
+  padding: 16px;
+  border-radius: 18px;
+  background: #fff7e8;
+}
+
+.chooser-status {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.chooser-status.error {
+  color: var(--warn);
+  font-weight: 800;
+}
+
+.recommendation-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.recommendation-card {
+  min-height: 150px;
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: linear-gradient(145deg, #fff, #fff5e2);
+}
+
+.recommendation-card strong,
+.recommendation-card p,
+.recommendation-card em {
+  display: block;
+}
+
+.meal-tag {
+  display: inline-flex;
+  align-items: center;
+  min-height: 28px;
+  margin-bottom: 12px;
+  border-radius: 999px;
+  background: var(--accent-soft);
+  color: var(--accent-strong);
+  padding: 0 10px;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.recommendation-card strong {
+  line-height: 1.35;
+}
+
+.recommendation-card p {
+  margin: 8px 0 12px;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.recommendation-card em {
+  color: var(--accent-strong);
+  font-size: 24px;
+  font-style: normal;
+  font-weight: 800;
+}
+
+.secondary-action {
+  min-height: 42px;
+  margin-top: 14px;
+  border-radius: 999px;
+  background: #fff;
+  color: var(--accent-strong);
+  padding: 0 18px;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: inset 0 0 0 1px rgba(47, 141, 104, 0.28);
+}
+
+.secondary-action:hover {
+  background: var(--accent-soft);
+}
+
 .primary-action {
   min-height: 44px;
   border-radius: 999px;
@@ -628,9 +751,14 @@ select:focus {
 @media (max-width: 820px) {
   .hero-card,
   .calc-grid,
+  .chooser-layout,
   .target-row,
   .meal-grid {
     grid-template-columns: 1fr;
+  }
+
+  .chooser-layout .field:first-child {
+    grid-row: auto;
   }
 
   .hero-copy {
@@ -642,10 +770,11 @@ select:focus {
   }
 
   .module-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  .add-plan-panel {
+  .add-plan-panel,
+  .chooser-action-row {
     align-items: stretch;
     flex-direction: column;
   }
@@ -669,6 +798,10 @@ select:focus {
 
   h2 {
     font-size: 24px;
+  }
+
+  .module-grid {
+    grid-template-columns: 1fr;
   }
 
   .section-heading,
