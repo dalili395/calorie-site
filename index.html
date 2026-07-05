@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>热量计算</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <section class="hero-card">
+        <div class="hero-copy">
+          <p class="eyebrow">今天吃什么更清楚</p>
+          <h1>热量计算</h1>
+          <p class="hero-text">搜索美食、设置重量、加入今日计划，实时看见总热量。</p>
+        </div>
+        <img src="assets/food-hero.png" alt="温馨美食插画" />
+      </section>
+
+      <section class="module-grid" aria-label="功能模块">
+        <button class="module-tile active" type="button" data-target="calculatorSection">
+          <span class="module-icon">🍱</span>
+          <strong>热量计算</strong>
+          <em>搜索食物并计算</em>
+        </button>
+        <button class="module-tile" type="button" data-target="planSection">
+          <span class="module-icon">📋</span>
+          <strong>今日计划</strong>
+          <em>早餐午餐晚餐宵夜</em>
+        </button>
+        <button class="module-tile" type="button" data-target="librarySection">
+          <span class="module-icon">🥢</span>
+          <strong>美食库</strong>
+          <em>分类浏览常见食物</em>
+        </button>
+      </section>
+
+      <section id="calculatorSection" class="feature-card calculator" aria-label="热量计算器">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">热量计算</p>
+            <h2>先选食物，再加入计划</h2>
+          </div>
+          <span class="soft-badge">实时计算</span>
+        </div>
+
+        <div class="field">
+          <label for="foodSearch">搜索食物</label>
+          <input id="foodSearch" type="search" placeholder="输入食物，例如：米饭、汉堡、炸鸡、披萨" autocomplete="off" />
+        </div>
+
+        <section id="librarySection" class="food-library" aria-label="可浏览食物库">
+          <div class="library-header">
+            <div>
+              <p class="eyebrow">可浏览食物库</p>
+              <h3>搜索结果会在这里联动</h3>
+            </div>
+            <div class="library-actions">
+              <button id="backToCategory" class="back-category" type="button" hidden>返回分类</button>
+              <span id="foodCount" class="food-count">0 种</span>
+            </div>
+          </div>
+
+          <div id="categoryTabs" class="category-tabs" aria-label="食物分类"></div>
+          <div id="foodGrid" class="food-grid" aria-live="polite"></div>
+        </section>
+
+        <p id="matchName" class="match-name">请输入食物名称</p>
+
+        <div class="calc-grid">
+          <div class="field">
+            <label for="amount">数量</label>
+            <div class="input-unit quantity-unit">
+              <input id="amount" type="number" min="0.1" step="0.1" value="100" />
+              <select id="unitSelect" aria-label="选择单位"></select>
+            </div>
+            <p id="portionHint" class="portion-hint">选择食物后显示换算</p>
+          </div>
+
+          <div class="calorie-result" aria-live="polite">
+            <span>热量</span>
+            <strong id="calories">0</strong>
+            <em>kcal</em>
+          </div>
+        </div>
+
+        <div class="add-plan-panel">
+          <div>
+            <span class="panel-label">加入计划</span>
+            <div id="mealPicker" class="meal-picker" aria-label="选择餐次">
+              <button class="active" type="button" data-meal="breakfast">早餐</button>
+              <button type="button" data-meal="lunch">午餐</button>
+              <button type="button" data-meal="dinner">晚餐</button>
+              <button type="button" data-meal="snack">宵夜</button>
+            </div>
+          </div>
+          <button id="addToPlan" class="primary-action" type="button">添加到计划</button>
+        </div>
+      </section>
+
+      <section id="planSection" class="feature-card plan-card" aria-label="今日计划">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">今日计划</p>
+            <h2>安排今天的热量</h2>
+          </div>
+          <span id="planTotalBadge" class="soft-badge">0 kcal</span>
+        </div>
+
+        <div class="target-row">
+          <div class="field">
+            <label for="targetCalories">今天热量安排</label>
+            <div class="input-unit">
+              <input id="targetCalories" type="number" min="1" step="50" value="2000" />
+              <span>kcal</span>
+            </div>
+          </div>
+          <div class="progress-panel">
+            <div class="progress-meta">
+              <span>已安排</span>
+              <strong id="planTotal">0 / 2000 kcal</strong>
+            </div>
+            <div class="progress-track">
+              <div id="planProgress" class="progress-fill"></div>
+            </div>
+          </div>
+        </div>
+
+        <p id="planWarning" class="plan-warning" hidden>今天热量已超标</p>
+
+        <div class="meal-grid">
+          <article class="meal-card" data-meal-card="breakfast">
+            <header>
+              <span>🌤️</span>
+              <h3>早餐</h3>
+            </header>
+            <ul id="breakfastList" class="meal-list"></ul>
+          </article>
+          <article class="meal-card" data-meal-card="lunch">
+            <header>
+              <span>☀️</span>
+              <h3>午餐</h3>
+            </header>
+            <ul id="lunchList" class="meal-list"></ul>
+          </article>
+          <article class="meal-card" data-meal-card="dinner">
+            <header>
+              <span>🌙</span>
+              <h3>晚餐</h3>
+            </header>
+            <ul id="dinnerList" class="meal-list"></ul>
+          </article>
+          <article class="meal-card" data-meal-card="snack">
+            <header>
+              <span>✨</span>
+              <h3>宵夜</h3>
+            </header>
+            <ul id="snackList" class="meal-list"></ul>
+          </article>
+        </div>
+      </section>
+    </main>
+
+    <script src="js/data/foods.js"></script>
+    <script src="js/data/categories.js"></script>
+    <script src="js/utils/format.js"></script>
+    <script src="js/services/foodSearch.js"></script>
+    <script src="js/services/portionService.js"></script>
+    <script src="js/controllers/calculatorController.js"></script>
+    <script src="js/controllers/libraryController.js"></script>
+    <script src="js/controllers/moduleNavigationController.js"></script>
+    <script src="js/controllers/plannerController.js"></script>
+    <script src="js/app.js"></script>
+  </body>
+</html>
