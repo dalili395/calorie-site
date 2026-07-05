@@ -46,16 +46,19 @@
     formatNumber
   });
 
+  const navigation = window.CalorieControllers.createModuleNavigationController({
+    buttons: elements.moduleButtons
+  });
+
   const library = window.CalorieControllers.createLibraryController({
     foods,
     categories,
     elements,
     searchService,
-    onFoodSelect: calculator.selectFood
-  });
-
-  window.CalorieControllers.createModuleNavigationController({
-    buttons: elements.moduleButtons
+    onFoodSelect: (food) => {
+      calculator.selectFood(food);
+      navigation.show("calculatorSection");
+    }
   });
 
   const planner = window.CalorieControllers.createPlannerController({

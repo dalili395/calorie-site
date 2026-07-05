@@ -196,6 +196,14 @@ h3 {
   scroll-margin-top: 18px;
 }
 
+.app-page[hidden] {
+  display: none;
+}
+
+.app-page.active-page {
+  display: block;
+}
+
 .feature-card.highlight {
   outline: 3px solid rgba(47, 141, 104, 0.22);
 }
@@ -319,6 +327,10 @@ select:focus {
   max-height: 276px;
   overflow: auto;
   padding-right: 2px;
+}
+
+.app-page.food-library .food-grid {
+  max-height: 520px;
 }
 
 .food-card {

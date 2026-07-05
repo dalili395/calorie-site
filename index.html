@@ -40,7 +40,7 @@
         </button>
       </section>
 
-      <section id="calculatorSection" class="feature-card calculator" aria-label="热量计算器">
+      <section id="calculatorSection" class="feature-card calculator app-page" aria-label="热量计算器">
         <div class="section-heading">
           <div>
             <p class="eyebrow">热量计算</p>
@@ -53,22 +53,6 @@
           <label for="foodSearch">搜索食物</label>
           <input id="foodSearch" type="search" placeholder="输入食物，例如：米饭、汉堡、炸鸡、披萨" autocomplete="off" />
         </div>
-
-        <section id="librarySection" class="food-library" aria-label="可浏览食物库">
-          <div class="library-header">
-            <div>
-              <p class="eyebrow">可浏览食物库</p>
-              <h3>搜索结果会在这里联动</h3>
-            </div>
-            <div class="library-actions">
-              <button id="backToCategory" class="back-category" type="button" hidden>返回分类</button>
-              <span id="foodCount" class="food-count">0 种</span>
-            </div>
-          </div>
-
-          <div id="categoryTabs" class="category-tabs" aria-label="食物分类"></div>
-          <div id="foodGrid" class="food-grid" aria-live="polite"></div>
-        </section>
 
         <p id="matchName" class="match-name">请输入食物名称</p>
 
@@ -103,7 +87,23 @@
         </div>
       </section>
 
-      <section id="selectorSection" class="feature-card chooser-card" aria-label="帮我选">
+      <section id="librarySection" class="feature-card food-library app-page" aria-label="可浏览食物库" hidden>
+        <div class="library-header">
+          <div>
+            <p class="eyebrow">可浏览食物库</p>
+            <h3>按分类浏览，选中后回到热量计算</h3>
+          </div>
+          <div class="library-actions">
+            <button id="backToCategory" class="back-category" type="button" hidden>返回分类</button>
+            <span id="foodCount" class="food-count">0 种</span>
+          </div>
+        </div>
+
+        <div id="categoryTabs" class="category-tabs" aria-label="食物分类"></div>
+        <div id="foodGrid" class="food-grid" aria-live="polite"></div>
+      </section>
+
+      <section id="selectorSection" class="feature-card chooser-card app-page" aria-label="帮我选" hidden>
         <div class="section-heading">
           <div>
             <p class="eyebrow">帮我选</p>
@@ -146,7 +146,7 @@
         <button id="addRecommendationToPlan" class="secondary-action" type="button" hidden>加入今日计划</button>
       </section>
 
-      <section id="planSection" class="feature-card plan-card" aria-label="今日计划">
+      <section id="planSection" class="feature-card plan-card app-page" aria-label="今日计划" hidden>
         <div class="section-heading">
           <div>
             <p class="eyebrow">今日计划</p>
