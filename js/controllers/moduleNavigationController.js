@@ -9,6 +9,7 @@ window.CalorieControllers.createModuleNavigationController = function createModu
     calculator: "calculatorSection",
     plan: "planSection",
     selector: "selectorSection",
+    records: "recordsSection",
     library: "librarySection"
   };
 

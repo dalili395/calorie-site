@@ -132,7 +132,7 @@ h3 {
 
 .module-grid {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(5, minmax(0, 1fr));
   gap: 14px;
   margin: 18px 0;
 }
@@ -614,6 +614,177 @@ select:focus {
   background: var(--accent-soft);
 }
 
+.metabolism-panel {
+  margin-top: 18px;
+  padding: 18px;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: linear-gradient(180deg, #fffaf1, #fffdf8);
+}
+
+.metabolism-status.positive,
+.soft-badge.positive {
+  background: var(--accent-soft);
+  color: var(--accent-strong);
+}
+
+.metabolism-status.negative,
+.soft-badge.negative {
+  background: #ffe8de;
+  color: var(--warn);
+}
+
+.metabolism-layout {
+  display: grid;
+  grid-template-columns: minmax(180px, 0.5fr) minmax(0, 1fr);
+  gap: 14px;
+}
+
+.activity-row {
+  display: grid;
+  grid-template-columns: minmax(160px, 0.8fr) minmax(210px, 1.2fr);
+  gap: 12px;
+}
+
+.metabolism-result-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 4px;
+}
+
+.mini-stat {
+  min-height: 112px;
+  padding: 16px;
+  border-radius: 16px;
+  background: #fff;
+  border: 1px solid var(--line);
+}
+
+.mini-stat span,
+.mini-stat strong,
+.mini-stat em {
+  display: block;
+}
+
+.mini-stat span {
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.mini-stat strong {
+  margin-top: 12px;
+  font-size: 34px;
+  line-height: 1;
+}
+
+.mini-stat em {
+  margin-top: 6px;
+  color: var(--muted);
+  font-style: normal;
+}
+
+.mini-stat.difference {
+  background: linear-gradient(135deg, var(--accent-soft), #fff4d8);
+}
+
+.record-save-row {
+  display: grid;
+  grid-template-columns: minmax(180px, 0.5fr) auto;
+  gap: 12px;
+  align-items: end;
+  margin-top: 14px;
+}
+
+.records-filter {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(180px, 1fr)) auto;
+  gap: 12px;
+  align-items: end;
+}
+
+.record-chart {
+  min-height: 300px;
+  margin-top: 12px;
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: #fff;
+  overflow: auto;
+}
+
+.record-chart svg {
+  display: block;
+  width: 100%;
+  min-width: 560px;
+  height: auto;
+}
+
+.record-chart polyline {
+  fill: none;
+  stroke: var(--accent);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 4;
+}
+
+.record-chart circle {
+  fill: #fff;
+  stroke: var(--accent-strong);
+  stroke-width: 3;
+}
+
+.record-chart text {
+  fill: var(--muted);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.record-chart .date-label {
+  font-size: 11px;
+}
+
+.record-chart .zero-line {
+  stroke: #d9ccb9;
+  stroke-dasharray: 6 6;
+  stroke-width: 2;
+}
+
+.empty-chart {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.record-list {
+  display: grid;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.record-item {
+  display: grid;
+  grid-template-columns: minmax(130px, 0.4fr) minmax(0, 1fr) auto;
+  gap: 12px;
+  align-items: center;
+  padding: 12px 14px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: #fff8eb;
+}
+
+.record-item span {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.record-item em {
+  color: var(--accent-strong);
+  font-style: normal;
+  font-weight: 800;
+}
+
 .primary-action {
   min-height: 44px;
   border-radius: 999px;
@@ -764,6 +935,11 @@ select:focus {
   .hero-card,
   .calc-grid,
   .chooser-layout,
+  .metabolism-layout,
+  .activity-row,
+  .metabolism-result-grid,
+  .record-save-row,
+  .records-filter,
   .target-row,
   .meal-grid {
     grid-template-columns: 1fr;

@@ -1,7 +1,7 @@
 window.CalorieControllers = window.CalorieControllers || {};
 
 window.CalorieControllers.createCalculatorController = function createCalculatorController(options) {
-  const { foods, elements, searchService, portionService, formatNumber } = options;
+  const { foods, elements, searchService, portionService, formatNumber, onEntryChange } = options;
   let currentFood;
   let currentFoodId = "";
 
@@ -52,6 +52,12 @@ window.CalorieControllers.createCalculatorController = function createCalculator
     };
   }
 
+  function notifyEntryChange() {
+    if (typeof onEntryChange === "function") {
+      onEntryChange(getEntry());
+    }
+  }
+
   function render(food = searchService.getBestMatch(foods, elements.foodSearch.value)) {
     currentFood = food;
 
@@ -61,6 +67,7 @@ window.CalorieControllers.createCalculatorController = function createCalculator
       elements.calories.textContent = "0";
       elements.unitSelect.innerHTML = "";
       elements.portionHint.textContent = "选择食物后显示换算";
+      notifyEntryChange();
       return;
     }
 
@@ -80,6 +87,7 @@ window.CalorieControllers.createCalculatorController = function createCalculator
     elements.matchName.textContent = `${food.name} · 每 ${baseUnitText} ${food.calories} kcal`;
     elements.portionHint.textContent = amountText;
     elements.calories.textContent = formatNumber(calories);
+    notifyEntryChange();
   }
 
   function selectFood(food) {

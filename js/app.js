@@ -35,15 +35,37 @@
     generateRecommendation: document.querySelector("#generateRecommendation"),
     recommendationSummary: document.querySelector("#recommendationSummary"),
     recommendationResult: document.querySelector("#recommendationResult"),
-    addRecommendationToPlan: document.querySelector("#addRecommendationToPlan")
+    addRecommendationToPlan: document.querySelector("#addRecommendationToPlan"),
+    bodyWeight: document.querySelector("#bodyWeight"),
+    walkMinutes: document.querySelector("#walkMinutes"),
+    walkMet: document.querySelector("#walkMet"),
+    bikeMinutes: document.querySelector("#bikeMinutes"),
+    bikeMet: document.querySelector("#bikeMet"),
+    comparisonCalories: document.querySelector("#comparisonCalories"),
+    metabolismValue: document.querySelector("#metabolismValue"),
+    calorieDifference: document.querySelector("#calorieDifference"),
+    metabolismStatus: document.querySelector("#metabolismStatus"),
+    recordDate: document.querySelector("#recordDate"),
+    saveDailyRecord: document.querySelector("#saveDailyRecord"),
+    recordStartDate: document.querySelector("#recordStartDate"),
+    recordEndDate: document.querySelector("#recordEndDate"),
+    refreshRecords: document.querySelector("#refreshRecords"),
+    recordChart: document.querySelector("#recordChart"),
+    recordList: document.querySelector("#recordList"),
+    recordsSummary: document.querySelector("#recordsSummary")
   };
+
+  let metabolism;
 
   const calculator = window.CalorieControllers.createCalculatorController({
     foods,
     elements,
     searchService,
     portionService,
-    formatNumber
+    formatNumber,
+    onEntryChange: () => {
+      if (metabolism) metabolism.render();
+    }
   });
 
   const navigation = window.CalorieControllers.createModuleNavigationController({
@@ -77,10 +99,23 @@
     onAddToPlan: planner.addEntries
   });
 
+  metabolism = window.CalorieControllers.createMetabolismController({
+    elements,
+    formatNumber,
+    getCurrentEntry: calculator.getEntry
+  });
+
+  const records = window.CalorieControllers.createRecordsController({
+    elements,
+    formatNumber
+  });
+
   elements.foodSearch.addEventListener("input", () => calculator.render());
 
   library.render();
   calculator.render();
   planner.render();
   recommender.render();
+  metabolism.render();
+  records.render();
 })();
