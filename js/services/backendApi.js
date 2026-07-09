@@ -3,14 +3,30 @@ window.CalorieServices = window.CalorieServices || {};
 window.CalorieServices.backendApi = (function createBackendApi() {
   const baseKey = "calorieApiBase";
   const passwordKey = "calorieCollabPassword";
-  const defaultBase = "http://127.0.0.1:8787";
+  const defaultBase = "";
+
+  function isLocalPage() {
+    return ["", "localhost", "127.0.0.1"].includes(window.location.hostname)
+      || window.location.protocol === "file:";
+  }
+
+  function isLegacyLocalBase(value) {
+    return /^https?:\/\/(127\.0\.0\.1|localhost)(:\d+)?$/i.test(value || "");
+  }
 
   function getBaseUrl() {
-    return localStorage.getItem(baseKey) || defaultBase;
+    const saved = localStorage.getItem(baseKey);
+    if (saved && !(isLegacyLocalBase(saved) && !isLocalPage())) return saved;
+    return defaultBase;
   }
 
   function setBaseUrl(value) {
-    localStorage.setItem(baseKey, value || defaultBase);
+    const nextValue = (value || "").trim();
+    if (nextValue) {
+      localStorage.setItem(baseKey, nextValue);
+    } else {
+      localStorage.removeItem(baseKey);
+    }
   }
 
   function getPassword() {

@@ -48,11 +48,11 @@ window.CalorieControllers.createCollaborationController = function createCollabo
       replaceCustomFoods(customFoods);
       customExercises = exercises;
       renderExerciseOptions();
-      setBackendStatus("后端已连接", true);
+      setBackendStatus("云端 API 已连接", true);
       setMessage(`已加载 ${customFoods.length} 个自定义食物，${exercises.length} 个自定义运动。`);
     }).catch(() => {
-      setBackendStatus("未连接后端", false);
-      setMessage("Python 后端未启动时，系统数据仍可使用；共创数据需启动后端后同步。");
+      setBackendStatus("云端 API 未连接", false);
+      setMessage("云端 API 或 D1 还没有配置完成时，系统食物仍可使用；共创数据需要配置后同步。");
     });
   }
 
@@ -62,7 +62,7 @@ window.CalorieControllers.createCollaborationController = function createCollabo
       .then((ok) => {
         elements.collabForms.hidden = !ok;
         if (!ok) {
-          setMessage("密码不正确。", "error");
+          setMessage("密码不正确，或 Cloudflare 还没有设置 CALORIE_COLLAB_PASSWORD。", "error");
           return;
         }
         setMessage("已进入共创模式，可以保存自定义数据。");
@@ -70,8 +70,8 @@ window.CalorieControllers.createCollaborationController = function createCollabo
       })
       .catch(() => {
         elements.collabForms.hidden = true;
-        setBackendStatus("未连接后端", false);
-        setMessage("无法连接 Python 后端，请先启动 backend/app.py。", "error");
+        setBackendStatus("云端 API 未连接", false);
+        setMessage("无法连接云端 API，请先完成 Cloudflare D1 绑定并重新部署。", "error");
       });
   }
 
