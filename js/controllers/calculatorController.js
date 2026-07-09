@@ -79,7 +79,7 @@ window.CalorieControllers.createCalculatorController = function createCalculator
     const baseAmount = portionService.getBaseAmount(food, amount, unit.id);
     const baseLabel = portionService.getBaseLabel(baseUnit);
     const calories = portionService.calculate(food, amount, unit.id);
-    const baseUnitText = baseUnit === "ml" ? "100 毫升" : "100 克";
+    const baseUnitText = baseUnit === "ml" ? "100 毫升" : baseUnit === "serving" ? "1 份" : "100 克";
     const amountText = unit.id === baseUnit
       ? `${formatNumber(amount)}${unit.label}`
       : `${formatNumber(amount)}${unit.label} ≈ ${formatNumber(baseAmount)}${baseLabel}`;

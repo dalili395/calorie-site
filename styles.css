@@ -132,7 +132,7 @@ h3 {
 
 .module-grid {
   display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
   gap: 14px;
   margin: 18px 0;
 }
@@ -303,6 +303,30 @@ select:focus {
   margin-bottom: 14px;
 }
 
+.source-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.source-filters button {
+  min-height: 34px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: #fff;
+  color: var(--ink);
+  padding: 0 12px;
+  cursor: pointer;
+}
+
+.source-filters button.active {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+  color: var(--accent-strong);
+  font-weight: 800;
+}
+
 .category-tabs button {
   flex: 0 0 auto;
   min-height: 36px;
@@ -354,6 +378,15 @@ select:focus {
 
 .food-card.selected {
   background: var(--accent-soft);
+}
+
+.food-card.custom {
+  border-color: rgba(213, 69, 47, 0.24);
+  background: #fff3ee;
+}
+
+.food-card.custom.selected {
+  box-shadow: 0 0 0 4px #ffe1da;
 }
 
 .food-card strong,
@@ -648,7 +681,7 @@ select:focus {
 
 .metabolism-result-grid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 12px;
   margin-top: 4px;
 }
@@ -783,6 +816,30 @@ select:focus {
   color: var(--accent-strong);
   font-style: normal;
   font-weight: 800;
+}
+
+.collab-login {
+  display: grid;
+  grid-template-columns: minmax(220px, 1fr) minmax(220px, 1fr) auto;
+  gap: 12px;
+  align-items: end;
+}
+
+.collab-forms {
+  display: grid;
+  gap: 14px;
+  margin-top: 18px;
+}
+
+.collab-form {
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: #fffaf1;
+}
+
+.collab-form h3 {
+  margin-bottom: 14px;
 }
 
 .primary-action {
@@ -940,6 +997,7 @@ select:focus {
   .metabolism-result-grid,
   .record-save-row,
   .records-filter,
+  .collab-login,
   .target-row,
   .meal-grid {
     grid-template-columns: 1fr;

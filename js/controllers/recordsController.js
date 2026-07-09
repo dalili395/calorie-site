@@ -1,8 +1,9 @@
 window.CalorieControllers = window.CalorieControllers || {};
 
 window.CalorieControllers.createRecordsController = function createRecordsController(options) {
-  const { elements, formatNumber } = options;
+  const { elements, formatNumber, backendApi } = options;
   const storageKey = "calorieDiffRecords";
+  let backendRecords = [];
 
   function formatLocalDate(date = new Date()) {
     const year = date.getFullYear();
@@ -39,7 +40,10 @@ window.CalorieControllers.createRecordsController = function createRecordsContro
 
   function getVisibleRecords() {
     const { start, end } = getRange();
-    return loadRecords()
+    const merged = new Map();
+    loadRecords().forEach((record) => merged.set(record.date, record));
+    backendRecords.forEach((record) => merged.set(record.date, record));
+    return Array.from(merged.values())
       .filter((record) => (!start || record.date >= start) && (!end || record.date <= end))
       .sort((a, b) => a.date.localeCompare(b.date));
   }
@@ -104,7 +108,7 @@ window.CalorieControllers.createRecordsController = function createRecordsContro
 
       item.className = "record-item";
       date.textContent = record.date;
-      meta.textContent = `代谢值 ${formatNumber(record.metabolism)} kcal · 热量值 ${formatNumber(record.calories)} kcal`;
+      meta.textContent = `运动消耗 ${formatNumber(record.metabolism)} kcal · 摄入 ${formatNumber(record.calories)} kcal · BMR ${formatNumber(record.bmr || 0)} kcal`;
       diff.textContent = `${formatNumber(record.difference)} kcal`;
 
       item.append(date, meta, diff);
@@ -118,14 +122,29 @@ window.CalorieControllers.createRecordsController = function createRecordsContro
     renderList(records);
   }
 
+  function syncBackendRecords() {
+    if (!backendApi) {
+      render();
+      return;
+    }
+    const { start, end } = getRange();
+    backendApi.getRecords(start, end)
+      .then((records) => {
+        backendRecords = records;
+        render();
+      })
+      .catch(() => render());
+  }
+
   elements.recordEndDate.value = getToday();
   elements.recordStartDate.value = shiftDate(getToday(), -6);
-  elements.refreshRecords.addEventListener("click", render);
-  elements.recordStartDate.addEventListener("change", render);
-  elements.recordEndDate.addEventListener("change", render);
-  window.addEventListener("calorie-records-updated", render);
+  elements.refreshRecords.addEventListener("click", syncBackendRecords);
+  elements.recordStartDate.addEventListener("change", syncBackendRecords);
+  elements.recordEndDate.addEventListener("change", syncBackendRecords);
+  window.addEventListener("calorie-records-updated", syncBackendRecords);
 
   return {
-    render
+    render,
+    syncBackendRecords
   };
 };

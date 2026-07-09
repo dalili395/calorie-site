@@ -38,6 +38,11 @@
           <strong>周期记录</strong>
           <em>查看热量差值曲线</em>
         </button>
+        <button class="module-tile" type="button" data-target="collabSection">
+          <span class="module-icon">🔐</span>
+          <strong>共创模式</strong>
+          <em>密码进入后改数据</em>
+        </button>
         <button class="module-tile" type="button" data-target="librarySection">
           <span class="module-icon">🥢</span>
           <strong>美食库</strong>
@@ -111,6 +116,58 @@
 
             <div class="activity-row">
               <div class="field">
+                <label for="biologicalSex">性别</label>
+                <select id="biologicalSex">
+                  <option value="female" selected>女</option>
+                  <option value="male">男</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="ageYears">年龄</label>
+                <div class="input-unit">
+                  <input id="ageYears" type="number" min="1" step="1" value="25" />
+                  <span>岁</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="activity-row">
+              <div class="field">
+                <label for="heightCm">身高</label>
+                <div class="input-unit">
+                  <input id="heightCm" type="number" min="1" step="0.1" value="165" />
+                  <span>cm</span>
+                </div>
+              </div>
+              <div class="field">
+                <label for="dailyFactor">日常系数</label>
+                <select id="dailyFactor">
+                  <option value="1.2" selected>久坐 1.20</option>
+                  <option value="1.375">轻活动 1.375</option>
+                  <option value="1.55">中等活动 1.55</option>
+                  <option value="1.725">高活动 1.725</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="activity-row">
+              <div class="field">
+                <label for="tefFactor">食物热效应系数</label>
+                <div class="input-unit">
+                  <input id="tefFactor" type="number" min="0" max="1" step="0.01" value="0.93" />
+                  <span>摄入乘数</span>
+                </div>
+              </div>
+              <div class="field">
+                <label for="customExerciseSelect">自定义运动消耗</label>
+                <select id="customExerciseSelect">
+                  <option value="">不使用自定义</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="activity-row">
+              <div class="field">
                 <label for="walkMinutes">走路时间</label>
                 <div class="input-unit">
                   <input id="walkMinutes" type="number" min="0" step="1" value="30" />
@@ -144,16 +201,31 @@
                 </select>
               </div>
             </div>
+
+            <div class="activity-row">
+              <div class="field">
+                <label for="customExerciseCalories">自定义消耗热量</label>
+                <div class="input-unit">
+                  <input id="customExerciseCalories" type="number" min="0" step="1" value="0" />
+                  <span>kcal</span>
+                </div>
+              </div>
+            </div>
           </div>
 
           <div class="metabolism-result-grid">
             <div class="mini-stat">
-              <span>热量值</span>
+              <span>摄入热量</span>
               <strong id="comparisonCalories">0</strong>
               <em>kcal</em>
             </div>
             <div class="mini-stat">
-              <span>代谢值</span>
+              <span>基础代谢</span>
+              <strong id="bmrValue">0</strong>
+              <em>kcal</em>
+            </div>
+            <div class="mini-stat">
+              <span>运动消耗</span>
               <strong id="metabolismValue">0</strong>
               <em>kcal</em>
             </div>
@@ -184,6 +256,12 @@
             <button id="backToCategory" class="back-category" type="button" hidden>返回分类</button>
             <span id="foodCount" class="food-count">0 种</span>
           </div>
+        </div>
+
+        <div id="sourceFilters" class="source-filters" aria-label="食物来源筛选">
+          <button class="active" type="button" data-source="all">全部</button>
+          <button type="button" data-source="system">系统</button>
+          <button type="button" data-source="custom">自定义</button>
         </div>
 
         <div id="categoryTabs" class="category-tabs" aria-label="食物分类"></div>
@@ -319,11 +397,74 @@
         <div id="recordChart" class="record-chart" aria-live="polite"></div>
         <div id="recordList" class="record-list"></div>
       </section>
+
+      <section id="collabSection" class="feature-card collab-card app-page" aria-label="共创模式" hidden>
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">共创模式</p>
+            <h2>输入密码后修改共享数据</h2>
+          </div>
+          <span id="backendStatus" class="soft-badge">未连接后端</span>
+        </div>
+
+        <div class="collab-login">
+          <div class="field">
+            <label for="apiBaseUrl">Python 后端地址</label>
+            <input id="apiBaseUrl" type="url" value="http://127.0.0.1:8787" />
+          </div>
+          <div class="field">
+            <label for="collabPassword">共创密码</label>
+            <input id="collabPassword" type="password" placeholder="输入共创密码" />
+          </div>
+          <button id="collabLogin" class="primary-action" type="button">进入共创模式</button>
+        </div>
+
+        <div id="collabForms" class="collab-forms" hidden>
+          <section class="collab-form">
+            <h3>新增自定义食物</h3>
+            <div class="records-filter">
+              <div class="field">
+                <label for="customFoodName">食物名称</label>
+                <input id="customFoodName" type="text" placeholder="例如：麻婆豆腐鲍鱼拌面" />
+              </div>
+              <div class="field">
+                <label for="customFoodCalories">热量</label>
+                <div class="input-unit">
+                  <input id="customFoodCalories" type="number" min="1" step="1" placeholder="900" />
+                  <span>kcal</span>
+                </div>
+              </div>
+              <button id="saveCustomFood" class="secondary-action" type="button">保存食物</button>
+            </div>
+          </section>
+
+          <section class="collab-form">
+            <h3>新增自定义运动消耗</h3>
+            <div class="records-filter">
+              <div class="field">
+                <label for="customExerciseName">运动名称</label>
+                <input id="customExerciseName" type="text" placeholder="例如：通勤骑行一趟" />
+              </div>
+              <div class="field">
+                <label for="customExerciseSavedCalories">消耗热量</label>
+                <div class="input-unit">
+                  <input id="customExerciseSavedCalories" type="number" min="1" step="1" placeholder="260" />
+                  <span>kcal</span>
+                </div>
+              </div>
+              <button id="saveCustomExercise" class="secondary-action" type="button">保存运动</button>
+            </div>
+          </section>
+        </div>
+
+        <p id="collabMessage" class="chooser-status">本地后端启动后才能同步到数据库。</p>
+      </section>
     </main>
 
     <script src="js/data/foods.js"></script>
     <script src="js/data/categories.js"></script>
     <script src="js/utils/format.js"></script>
+    <script src="js/services/backendApi.js"></script>
     <script src="js/services/foodSearch.js"></script>
     <script src="js/services/portionService.js"></script>
     <script src="js/controllers/calculatorController.js"></script>
@@ -333,6 +474,7 @@
     <script src="js/controllers/recommendationController.js"></script>
     <script src="js/controllers/metabolismController.js"></script>
     <script src="js/controllers/recordsController.js"></script>
+    <script src="js/controllers/collaborationController.js"></script>
     <script src="js/app.js"></script>
   </body>
 </html>

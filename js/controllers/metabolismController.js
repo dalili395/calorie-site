@@ -1,10 +1,14 @@
 window.CalorieControllers = window.CalorieControllers || {};
 
 window.CalorieControllers.createMetabolismController = function createMetabolismController(options) {
-  const { elements, formatNumber, getCurrentEntry } = options;
+  const { elements, formatNumber, getCurrentEntry, backendApi } = options;
   const storageKey = "calorieDiffRecords";
+  let renderToken = 0;
   let lastResult = {
     calories: 0,
+    tefFactor: 0.93,
+    bmr: 0,
+    dailyFactor: 1.2,
     metabolism: 0,
     difference: 0,
     status: "还需加油哦"
@@ -40,7 +44,36 @@ window.CalorieControllers.createMetabolismController = function createMetabolism
     const weightKg = getPositiveNumber(elements.bodyWeight);
     const walking = calculateActivityCalories(Number(elements.walkMet.value), weightKg, getMinutes(elements.walkMinutes));
     const cycling = calculateActivityCalories(Number(elements.bikeMet.value), weightKg, getMinutes(elements.bikeMinutes));
-    return walking + cycling;
+    const custom = getPositiveNumber(elements.customExerciseCalories);
+    return walking + cycling + custom;
+  }
+
+  function calculateBmr() {
+    const sexOffset = elements.biologicalSex.value === "male" ? 5 : -161;
+    return 10 * getPositiveNumber(elements.bodyWeight)
+      + 6.25 * getPositiveNumber(elements.heightCm)
+      - 5 * getPositiveNumber(elements.ageYears)
+      + sexOffset;
+  }
+
+  function getPayload() {
+    const calories = getCurrentCalories();
+    const metabolism = calculateMetabolism();
+    const bmr = calculateBmr();
+    const tefFactor = getPositiveNumber(elements.tefFactor) || 0.93;
+    const dailyFactor = getPositiveNumber(elements.dailyFactor) || 1.2;
+    return {
+      date: elements.recordDate.value || getToday(),
+      intakeCalories: calories,
+      tefFactor,
+      sex: elements.biologicalSex.value,
+      age: getPositiveNumber(elements.ageYears),
+      heightCm: getPositiveNumber(elements.heightCm),
+      weightKg: getPositiveNumber(elements.bodyWeight),
+      dailyFactor,
+      exerciseCalories: metabolism,
+      bmr
+    };
   }
 
   function loadRecords() {
@@ -62,19 +95,51 @@ window.CalorieControllers.createMetabolismController = function createMetabolism
     return entry ? entry.calories : 0;
   }
 
-  function render() {
-    const calories = getCurrentCalories();
-    const metabolism = calculateMetabolism();
-    const difference = metabolism - calories;
-    const status = difference > 0 ? "今天瘦了" : "还需加油哦";
+  function applyResult(result) {
+    lastResult = {
+      calories: result.intake,
+      tefFactor: result.tefFactor,
+      bmr: result.bmr,
+      dailyFactor: result.dailyFactor,
+      metabolism: result.exercise,
+      difference: result.difference,
+      status: result.status
+    };
+    elements.comparisonCalories.textContent = formatNumber(result.intake);
+    elements.bmrValue.textContent = formatNumber(result.bmr);
+    elements.metabolismValue.textContent = formatNumber(result.exercise);
+    elements.calorieDifference.textContent = formatNumber(result.difference);
+    elements.metabolismStatus.textContent = result.status;
+    elements.metabolismStatus.classList.toggle("positive", result.difference < 0);
+    elements.metabolismStatus.classList.toggle("negative", result.difference >= 0);
+  }
 
-    lastResult = { calories, metabolism, difference, status };
-    elements.comparisonCalories.textContent = formatNumber(calories);
-    elements.metabolismValue.textContent = formatNumber(metabolism);
-    elements.calorieDifference.textContent = formatNumber(difference);
-    elements.metabolismStatus.textContent = status;
-    elements.metabolismStatus.classList.toggle("positive", difference > 0);
-    elements.metabolismStatus.classList.toggle("negative", difference <= 0);
+  function calculateLocal(payload) {
+    const difference = payload.intakeCalories * payload.tefFactor
+      - payload.bmr * payload.dailyFactor
+      - payload.exerciseCalories;
+    return {
+      intake: payload.intakeCalories,
+      tefFactor: payload.tefFactor,
+      bmr: payload.bmr,
+      dailyFactor: payload.dailyFactor,
+      exercise: payload.exerciseCalories,
+      difference,
+      status: difference < 0 ? "今天瘦了" : "还需加油哦"
+    };
+  }
+
+  function render() {
+    const token = ++renderToken;
+    const payload = getPayload();
+    applyResult(calculateLocal(payload));
+
+    if (!backendApi) return;
+    backendApi.calculateDifference(payload)
+      .then((result) => {
+        if (token === renderToken) applyResult(result);
+      })
+      .catch(() => {});
   }
 
   function saveDailyRecord() {
@@ -83,6 +148,9 @@ window.CalorieControllers.createMetabolismController = function createMetabolism
     records.push({
       date,
       calories: lastResult.calories,
+      tefFactor: lastResult.tefFactor,
+      bmr: lastResult.bmr,
+      dailyFactor: lastResult.dailyFactor,
       metabolism: lastResult.metabolism,
       difference: lastResult.difference,
       status: lastResult.status,
@@ -90,23 +158,48 @@ window.CalorieControllers.createMetabolismController = function createMetabolism
     });
     records.sort((a, b) => a.date.localeCompare(b.date));
     saveRecords(records);
+    if (backendApi) {
+      backendApi.saveRecord(getPayload()).catch(() => {});
+    }
     elements.metabolismStatus.textContent = "已保存";
+  }
+
+  function setCustomExercises(exercises) {
+    elements.customExerciseSelect.innerHTML = '<option value="">不使用自定义</option>';
+    exercises.forEach((exercise) => {
+      const option = document.createElement("option");
+      option.value = String(exercise.calories);
+      option.textContent = `${exercise.name} · ${formatNumber(exercise.calories)} kcal`;
+      elements.customExerciseSelect.appendChild(option);
+    });
   }
 
   [
     elements.bodyWeight,
+    elements.biologicalSex,
+    elements.ageYears,
+    elements.heightCm,
+    elements.dailyFactor,
+    elements.tefFactor,
     elements.walkMinutes,
     elements.walkMet,
     elements.bikeMinutes,
-    elements.bikeMet
+    elements.bikeMet,
+    elements.customExerciseCalories,
+    elements.customExerciseSelect
   ].forEach((element) => {
     element.addEventListener("input", render);
     element.addEventListener("change", render);
+  });
+  elements.customExerciseSelect.addEventListener("change", () => {
+    elements.customExerciseCalories.value = elements.customExerciseSelect.value || "0";
+    render();
   });
   elements.saveDailyRecord.addEventListener("click", saveDailyRecord);
   elements.recordDate.value = getToday();
 
   return {
-    render
+    render,
+    setCustomExercises
   };
 };

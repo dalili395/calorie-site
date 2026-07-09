@@ -10,6 +10,7 @@ window.CalorieControllers.createModuleNavigationController = function createModu
     plan: "planSection",
     selector: "selectorSection",
     records: "recordsSection",
+    collab: "collabSection",
     library: "librarySection"
   };
 

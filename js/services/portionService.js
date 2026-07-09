@@ -39,6 +39,13 @@ window.CalorieServices.portionService = (function createPortionService() {
   }
 
   function getRule(food) {
+    if (food.sourceType === "custom" && food.unit === "serving") {
+      return {
+        baseUnit: "serving",
+        defaultAmount: 1,
+        units: [{ id: "serving", label: "份", baseAmount: 1, defaultAmount: 1 }]
+      };
+    }
     const text = normalize(food);
     return rules.find((rule) => rule.pattern.test(text));
   }
@@ -48,15 +55,19 @@ window.CalorieServices.portionService = (function createPortionService() {
   }
 
   function getBaseLabel(baseUnit) {
+    if (baseUnit === "serving") return "份";
     return baseUnit === "ml" ? "毫升" : "克";
   }
 
   function getUnits(food) {
     const rule = getRule(food);
     const baseUnit = getBaseUnit(food);
-    const baseOption = baseUnit === "ml"
+    const baseOption = baseUnit === "serving"
+      ? { id: "serving", label: "份", baseAmount: 1, defaultAmount: 1 }
+      : baseUnit === "ml"
       ? { id: "ml", label: "毫升", baseAmount: 1, defaultAmount: rule?.defaultAmount || 500 }
       : { id: "g", label: "克", baseAmount: 1, defaultAmount: 100 };
+    if (baseUnit === "serving") return [baseOption];
     const gramFallback = baseUnit === "ml"
       ? [{ id: "g", label: "克", baseAmount: 1, defaultAmount: 100 }]
       : [];
@@ -82,6 +93,9 @@ window.CalorieServices.portionService = (function createPortionService() {
   }
 
   function calculate(food, amount, unitId) {
+    if (food.sourceType === "custom" && food.unit === "serving") {
+      return food.calories * amount;
+    }
     return food.calories * (getBaseAmount(food, amount, unitId) / 100);
   }
 
