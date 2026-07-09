@@ -1,31 +1,29 @@
-const SCHEMA_SQL = `
-CREATE TABLE IF NOT EXISTS custom_foods (
-  id TEXT PRIMARY KEY,
-  name TEXT NOT NULL,
-  calories REAL NOT NULL,
-  unit TEXT NOT NULL DEFAULT 'serving',
-  created_at TEXT NOT NULL
-);
-
-CREATE TABLE IF NOT EXISTS custom_exercises (
-  id TEXT PRIMARY KEY,
-  name TEXT NOT NULL,
-  calories REAL NOT NULL,
-  created_at TEXT NOT NULL
-);
-
-CREATE TABLE IF NOT EXISTS calorie_records (
-  date TEXT PRIMARY KEY,
-  intake REAL NOT NULL,
-  tef_factor REAL NOT NULL,
-  bmr REAL NOT NULL,
-  daily_factor REAL NOT NULL,
-  exercise REAL NOT NULL,
-  difference REAL NOT NULL,
-  status TEXT NOT NULL,
-  saved_at TEXT NOT NULL
-);
-`;
+const SCHEMA_STATEMENTS = [
+  `CREATE TABLE IF NOT EXISTS custom_foods (
+    id TEXT PRIMARY KEY,
+    name TEXT NOT NULL,
+    calories REAL NOT NULL,
+    unit TEXT NOT NULL DEFAULT 'serving',
+    created_at TEXT NOT NULL
+  )`,
+  `CREATE TABLE IF NOT EXISTS custom_exercises (
+    id TEXT PRIMARY KEY,
+    name TEXT NOT NULL,
+    calories REAL NOT NULL,
+    created_at TEXT NOT NULL
+  )`,
+  `CREATE TABLE IF NOT EXISTS calorie_records (
+    date TEXT PRIMARY KEY,
+    intake REAL NOT NULL,
+    tef_factor REAL NOT NULL,
+    bmr REAL NOT NULL,
+    daily_factor REAL NOT NULL,
+    exercise REAL NOT NULL,
+    difference REAL NOT NULL,
+    status TEXT NOT NULL,
+    saved_at TEXT NOT NULL
+  )`
+];
 
 let schemaReady = false;
 
@@ -76,7 +74,9 @@ async function getDb(env) {
     throw new Error("D1 binding DB is not configured");
   }
   if (!schemaReady) {
-    await env.DB.exec(SCHEMA_SQL);
+    for (const statement of SCHEMA_STATEMENTS) {
+      await env.DB.prepare(statement).run();
+    }
     schemaReady = true;
   }
   return env.DB;
