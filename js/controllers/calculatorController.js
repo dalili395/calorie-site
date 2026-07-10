@@ -1,7 +1,7 @@
 window.CalorieControllers = window.CalorieControllers || {};
 
 window.CalorieControllers.createCalculatorController = function createCalculatorController(options) {
-  const { foods, elements, searchService, portionService, formatNumber, onEntryChange } = options;
+  const { foods, elements, searchService, portionService, formatNumber, feedback, onEntryChange } = options;
   let currentFood;
   let currentFoodId = "";
 
@@ -86,7 +86,11 @@ window.CalorieControllers.createCalculatorController = function createCalculator
 
     elements.matchName.textContent = `${food.name} · 每 ${baseUnitText} ${food.calories} kcal`;
     elements.portionHint.textContent = amountText;
-    elements.calories.textContent = formatNumber(calories);
+    const calorieText = formatNumber(calories);
+    if (elements.calories.textContent !== calorieText && feedback) {
+      feedback.pulse(elements.calorieResult);
+    }
+    elements.calories.textContent = calorieText;
     notifyEntryChange();
   }
 

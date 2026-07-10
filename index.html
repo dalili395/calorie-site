@@ -10,45 +10,40 @@
     <main class="app-shell">
       <section class="hero-card">
         <div class="hero-copy">
-          <p class="eyebrow">今天吃什么更清楚</p>
+          <p class="eyebrow">今天吃什么，心里更有数</p>
           <h1>热量计算</h1>
-          <p class="hero-text">搜索美食、设置重量、加入今日计划，实时看见总热量。</p>
+          <p class="hero-text">查热量、排餐次、看差值，让今天的每一餐都更从容。</p>
         </div>
         <img src="assets/food-hero.png" alt="温馨美食插画" />
       </section>
 
-      <section class="module-grid" aria-label="功能模块">
-        <button class="module-tile active" type="button" data-target="calculatorSection">
+      <nav class="module-grid" aria-label="功能导航">
+        <button class="module-tile active" type="button" data-target="calculatorSection" aria-current="page">
           <span class="module-icon">🍱</span>
           <strong>热量计算</strong>
-          <em>搜索食物并计算</em>
         </button>
         <button class="module-tile" type="button" data-target="planSection">
           <span class="module-icon">📋</span>
           <strong>今日计划</strong>
-          <em>早餐午餐晚餐宵夜</em>
+          <span id="navPlanTotal" class="nav-count" hidden>0</span>
         </button>
         <button class="module-tile" type="button" data-target="selectorSection">
           <span class="module-icon">🍽️</span>
           <strong>帮我选</strong>
-          <em>按热量和品类推荐</em>
         </button>
         <button class="module-tile" type="button" data-target="recordsSection">
           <span class="module-icon">📈</span>
           <strong>周期记录</strong>
-          <em>查看热量差值曲线</em>
         </button>
         <button class="module-tile" type="button" data-target="collabSection">
           <span class="module-icon">🔐</span>
           <strong>共创模式</strong>
-          <em>密码进入后改数据</em>
         </button>
         <button class="module-tile" type="button" data-target="librarySection">
           <span class="module-icon">🥢</span>
           <strong>美食库</strong>
-          <em>分类浏览常见食物</em>
         </button>
-      </section>
+      </nav>
 
       <section id="calculatorSection" class="feature-card calculator app-page" aria-label="热量计算器">
         <div class="section-heading">
@@ -76,7 +71,7 @@
             <p id="portionHint" class="portion-hint">选择食物后显示换算</p>
           </div>
 
-          <div class="calorie-result" aria-live="polite">
+          <div id="calorieResult" class="calorie-result" aria-live="polite">
             <span>热量</span>
             <strong id="calories">0</strong>
             <em>kcal</em>
@@ -96,14 +91,19 @@
           <button id="addToPlan" class="primary-action" type="button">添加到计划</button>
         </div>
 
-        <section class="metabolism-panel" aria-label="运动代谢计算">
-          <div class="section-heading">
+        <details class="metabolism-panel">
+          <summary class="metabolism-summary">
             <div>
-              <p class="eyebrow">运动代谢值</p>
-              <h3>走路和骑行消耗</h3>
+              <p class="eyebrow">进阶计算</p>
+              <h3>基础代谢、走路与骑行消耗</h3>
             </div>
-            <span id="metabolismStatus" class="soft-badge">还需加油哦</span>
-          </div>
+            <span class="metabolism-summary-state">
+              <span id="metabolismStatus" class="soft-badge">还需加油哦</span>
+              <span class="summary-chevron" aria-hidden="true">⌄</span>
+            </span>
+          </summary>
+
+          <div class="metabolism-content">
 
           <div class="metabolism-layout">
             <div class="field">
@@ -243,7 +243,8 @@
             </div>
             <button id="saveDailyRecord" class="secondary-action" type="button">保存今日记录</button>
           </div>
-        </section>
+          </div>
+        </details>
       </section>
 
       <section id="librarySection" class="feature-card food-library app-page" aria-label="可浏览食物库" hidden>
@@ -329,12 +330,20 @@
             </div>
           </div>
           <div class="progress-panel">
-            <div class="progress-meta">
-              <span>已安排</span>
-              <strong id="planTotal">0 / 2000 kcal</strong>
+            <div id="planProgressRing" class="progress-ring" aria-hidden="true">
+              <div class="progress-ring-center">
+                <strong id="planRemaining">2000</strong>
+                <span>剩余 kcal</span>
+              </div>
             </div>
-            <div class="progress-track">
-              <div id="planProgress" class="progress-fill"></div>
+            <div class="progress-copy">
+              <div class="progress-meta">
+                <span>今日进度</span>
+                <strong id="planTotal">0 / 2000 kcal</strong>
+              </div>
+              <div class="progress-track">
+                <div id="planProgress" class="progress-fill"></div>
+              </div>
             </div>
           </div>
         </div>
@@ -473,6 +482,8 @@
 
         <p id="collabMessage" class="chooser-status">输入共创密码后才能新增或删除共享数据。</p>
       </section>
+
+      <div id="appToast" class="app-toast" role="status" aria-live="polite" hidden></div>
     </main>
 
     <script src="js/data/foods.js"></script>
@@ -489,6 +500,7 @@
     <script src="js/controllers/metabolismController.js"></script>
     <script src="js/controllers/recordsController.js"></script>
     <script src="js/controllers/collaborationController.js"></script>
+    <script src="js/controllers/feedbackController.js"></script>
     <script src="js/app.js"></script>
   </body>
 </html>

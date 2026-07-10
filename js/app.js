@@ -13,6 +13,7 @@
     portionHint: document.querySelector("#portionHint"),
     matchName: document.querySelector("#matchName"),
     calories: document.querySelector("#calories"),
+    calorieResult: document.querySelector("#calorieResult"),
     foodCount: document.querySelector("#foodCount"),
     backToCategory: document.querySelector("#backToCategory"),
     categoryTabs: document.querySelector("#categoryTabs"),
@@ -23,8 +24,11 @@
     addToPlan: document.querySelector("#addToPlan"),
     targetCalories: document.querySelector("#targetCalories"),
     planTotal: document.querySelector("#planTotal"),
+    navPlanTotal: document.querySelector("#navPlanTotal"),
     planTotalBadge: document.querySelector("#planTotalBadge"),
     planProgress: document.querySelector("#planProgress"),
+    planProgressRing: document.querySelector("#planProgressRing"),
+    planRemaining: document.querySelector("#planRemaining"),
     planWarning: document.querySelector("#planWarning"),
     breakfastList: document.querySelector("#breakfastList"),
     lunchList: document.querySelector("#lunchList"),
@@ -78,10 +82,12 @@
     customExerciseSavedCalories: document.querySelector("#customExerciseSavedCalories"),
     saveCustomExercise: document.querySelector("#saveCustomExercise"),
     customExerciseList: document.querySelector("#customExerciseList"),
-    customExerciseCount: document.querySelector("#customExerciseCount")
+    customExerciseCount: document.querySelector("#customExerciseCount"),
+    appToast: document.querySelector("#appToast")
   };
 
   let metabolism;
+  const feedback = window.CalorieControllers.createFeedbackController({ toast: elements.appToast });
 
   const calculator = window.CalorieControllers.createCalculatorController({
     foods,
@@ -89,6 +95,7 @@
     searchService,
     portionService,
     formatNumber,
+    feedback,
     onEntryChange: () => {
       if (metabolism) metabolism.render();
     }
@@ -112,7 +119,8 @@
   const planner = window.CalorieControllers.createPlannerController({
     elements,
     formatNumber,
-    getCurrentEntry: calculator.getEntry
+    getCurrentEntry: calculator.getEntry,
+    feedback
   });
 
   const recommender = window.CalorieControllers.createRecommendationController({

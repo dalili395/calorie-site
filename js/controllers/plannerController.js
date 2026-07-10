@@ -1,7 +1,7 @@
 window.CalorieControllers = window.CalorieControllers || {};
 
 window.CalorieControllers.createPlannerController = function createPlannerController(options) {
-  const { elements, formatNumber, getCurrentEntry } = options;
+  const { elements, formatNumber, getCurrentEntry, feedback } = options;
   const mealLabels = {
     breakfast: "早餐",
     lunch: "午餐",
@@ -79,6 +79,7 @@ window.CalorieControllers.createPlannerController = function createPlannerContro
         plan[mealId] = plan[mealId].filter((current) => current.id !== entry.id);
         savePlan();
         render();
+        if (feedback) feedback.show(`已从${mealLabels[mealId]}移除 ${entry.name}`);
       });
 
       copy.append(title, meta);
@@ -92,11 +93,18 @@ window.CalorieControllers.createPlannerController = function createPlannerContro
     const target = getTarget();
     const percent = target > 0 ? Math.min((total / target) * 100, 120) : 0;
     const isOver = target > 0 && total > target;
+    const remaining = Math.abs(target - total);
 
     elements.planTotal.textContent = `${formatNumber(total)} / ${formatNumber(target)} kcal`;
     elements.planTotalBadge.textContent = `${formatNumber(total)} kcal`;
+    elements.navPlanTotal.textContent = formatNumber(total);
+    elements.navPlanTotal.hidden = total === 0;
+    elements.planRemaining.textContent = formatNumber(remaining);
+    elements.planRemaining.nextElementSibling.textContent = isOver ? "超出 kcal" : "剩余 kcal";
     elements.planProgress.style.width = `${percent}%`;
     elements.planProgress.classList.toggle("over", isOver);
+    elements.planProgressRing.style.setProperty("--progress-angle", `${Math.min(percent, 100) * 3.6}deg`);
+    elements.planProgressRing.classList.toggle("over", isOver);
     elements.planWarning.hidden = !isOver;
   }
 
@@ -114,10 +122,14 @@ window.CalorieControllers.createPlannerController = function createPlannerContro
 
   function addCurrentEntry() {
     const entry = getCurrentEntry();
-    if (!entry) return;
+    if (!entry) {
+      if (feedback) feedback.show("请先搜索并选择食物", "error");
+      return;
+    }
     plan[selectedMeal].push(entry);
     savePlan();
     render();
+    if (feedback) feedback.show(`已加入${mealLabels[selectedMeal]}：${entry.name}`);
   }
 
   function addEntries(entries) {
@@ -130,6 +142,7 @@ window.CalorieControllers.createPlannerController = function createPlannerContro
     });
     savePlan();
     render();
+    if (feedback && entries.length) feedback.show(`已将 ${entries.length} 项推荐加入今日计划`);
   }
 
   elements.mealButtons.forEach((button) => {

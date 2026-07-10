@@ -26,21 +26,41 @@ window.CalorieControllers.createModuleNavigationController = function createModu
   function show(targetId, shouldUpdateHash = true) {
     const target = document.querySelector(`#${targetId}`) || document.querySelector("#calculatorSection");
     if (!target) return;
+    const scrollPosition = window.scrollY;
 
     pages.forEach((page) => {
       const isActive = page === target;
       page.hidden = !isActive;
       page.classList.toggle("active-page", isActive);
+      if (!isActive) page.style.minHeight = "";
     });
 
+    if (scrollPosition > 0) {
+      const requiredHeight = window.innerHeight + scrollPosition - target.offsetTop;
+      target.style.minHeight = `${Math.max(requiredHeight, 0)}px`;
+    } else {
+      target.style.minHeight = "";
+    }
+
     buttons.forEach((button) => {
-      button.classList.toggle("active", button.dataset.target === target.id);
+      const isActive = button.dataset.target === target.id;
+      button.classList.toggle("active", isActive);
+      if (isActive) {
+        button.setAttribute("aria-current", "page");
+      } else {
+        button.removeAttribute("aria-current");
+      }
     });
+
+    const activeButton = buttons.find((button) => button.dataset.target === target.id);
+    const pageName = activeButton ? activeButton.querySelector("strong").textContent : "热量计算";
+    document.title = `${pageName} · 热量计算`;
 
     if (shouldUpdateHash) {
       window.history.pushState(null, "", `#${getRouteName(target.id)}`);
     }
 
+    requestAnimationFrame(() => window.scrollTo(0, scrollPosition));
   }
 
   buttons.forEach((button) => {
