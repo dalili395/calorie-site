@@ -2,8 +2,8 @@ window.CalorieServices = window.CalorieServices || {};
 
 window.CalorieServices.backendApi = (function createBackendApi() {
   const baseKey = "calorieApiBase";
-  const passwordKey = "calorieCollabPassword";
   const defaultBase = "";
+  let activePassword = "";
 
   function isLocalPage() {
     return ["", "localhost", "127.0.0.1"].includes(window.location.hostname)
@@ -30,11 +30,11 @@ window.CalorieServices.backendApi = (function createBackendApi() {
   }
 
   function getPassword() {
-    return sessionStorage.getItem(passwordKey) || "";
+    return activePassword;
   }
 
   function setPassword(value) {
-    sessionStorage.setItem(passwordKey, value || "");
+    activePassword = value || "";
   }
 
   async function request(path, options = {}) {
@@ -46,7 +46,10 @@ window.CalorieServices.backendApi = (function createBackendApi() {
         ...(options.headers || {})
       }
     });
-    const data = await response.json();
+    const contentType = response.headers.get("Content-Type") || "";
+    const data = contentType.includes("application/json")
+      ? await response.json()
+      : { error: "后端返回了非 JSON 内容" };
     if (!response.ok) {
       throw new Error(data.error || "后端请求失败");
     }
@@ -65,6 +68,13 @@ window.CalorieServices.backendApi = (function createBackendApi() {
     }).then((data) => data.food);
   }
 
+  function deleteCustomFood(id, password = getPassword()) {
+    return request(`/api/custom-foods/${encodeURIComponent(id)}`, {
+      method: "DELETE",
+      password
+    });
+  }
+
   function getCustomExercises() {
     return request("/api/custom-exercises").then((data) => data.exercises || []);
   }
@@ -75,6 +85,13 @@ window.CalorieServices.backendApi = (function createBackendApi() {
       password,
       body: JSON.stringify(payload)
     }).then((data) => data.exercise);
+  }
+
+  function deleteCustomExercise(id, password = getPassword()) {
+    return request(`/api/custom-exercises/${encodeURIComponent(id)}`, {
+      method: "DELETE",
+      password
+    });
   }
 
   function calculateDifference(payload) {
@@ -114,6 +131,8 @@ window.CalorieServices.backendApi = (function createBackendApi() {
     calculateDifference,
     createCustomExercise,
     createCustomFood,
+    deleteCustomExercise,
+    deleteCustomFood,
     getBaseUrl,
     getCustomExercises,
     getCustomFoods,

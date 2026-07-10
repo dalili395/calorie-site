@@ -72,9 +72,13 @@
     customFoodName: document.querySelector("#customFoodName"),
     customFoodCalories: document.querySelector("#customFoodCalories"),
     saveCustomFood: document.querySelector("#saveCustomFood"),
+    customFoodList: document.querySelector("#customFoodList"),
+    customFoodCount: document.querySelector("#customFoodCount"),
     customExerciseName: document.querySelector("#customExerciseName"),
     customExerciseSavedCalories: document.querySelector("#customExerciseSavedCalories"),
-    saveCustomExercise: document.querySelector("#saveCustomExercise")
+    saveCustomExercise: document.querySelector("#saveCustomExercise"),
+    customExerciseList: document.querySelector("#customExerciseList"),
+    customExerciseCount: document.querySelector("#customExerciseCount")
   };
 
   let metabolism;

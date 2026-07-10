@@ -30,7 +30,7 @@ let schemaReady = false;
 function corsHeaders() {
   return {
     "Access-Control-Allow-Origin": "*",
-    "Access-Control-Allow-Methods": "GET,POST,OPTIONS",
+    "Access-Control-Allow-Methods": "GET,POST,DELETE,OPTIONS",
     "Access-Control-Allow-Headers": "Content-Type,X-Collab-Password"
   };
 }
@@ -304,6 +304,30 @@ async function handlePost(request, env) {
   return json({ error: "not found" }, 404);
 }
 
+async function handleDelete(request, env) {
+  if (!hasValidPassword(request, env)) return json({ error: "wrong password" }, 403);
+
+  const route = getRoute(request);
+  const foodMatch = route.match(/^\/custom-foods\/([^/]+)$/);
+  const exerciseMatch = route.match(/^\/custom-exercises\/([^/]+)$/);
+
+  if (foodMatch) {
+    const db = await getDb(env);
+    const id = decodeURIComponent(foodMatch[1]);
+    const result = await db.prepare("DELETE FROM custom_foods WHERE id = ?").bind(id).run();
+    return json({ ok: true, deleted: result.meta?.changes || 0 });
+  }
+
+  if (exerciseMatch) {
+    const db = await getDb(env);
+    const id = decodeURIComponent(exerciseMatch[1]);
+    const result = await db.prepare("DELETE FROM custom_exercises WHERE id = ?").bind(id).run();
+    return json({ ok: true, deleted: result.meta?.changes || 0 });
+  }
+
+  return json({ error: "not found" }, 404);
+}
+
 export async function onRequest(context) {
   const { request, env } = context;
   try {
@@ -312,6 +336,7 @@ export async function onRequest(context) {
     }
     if (request.method === "GET") return handleGet(request, env);
     if (request.method === "POST") return handlePost(request, env);
+    if (request.method === "DELETE") return handleDelete(request, env);
     return json({ error: "method not allowed" }, 405);
   } catch (error) {
     return json({ error: error.message || "server error" }, 500);
