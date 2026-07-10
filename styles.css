@@ -17,6 +17,7 @@
   --warn: #d64c39;
   --shadow: 0 16px 40px rgba(39, 60, 49, 0.1);
   --shadow-soft: 0 8px 24px rgba(39, 60, 49, 0.07);
+  --page-gutter: clamp(16px, 3vw, 64px);
 }
 
 @property --progress-angle {
@@ -69,25 +70,25 @@ summary:focus-visible {
 }
 
 .app-shell {
-  width: min(1180px, calc(100% - 40px));
-  margin: 0 auto;
-  padding: 24px 0 56px;
+  width: 100%;
+  margin: 0;
+  padding: 0 0 56px;
 }
 
 .hero-card {
   position: relative;
-  min-height: 280px;
+  min-height: clamp(280px, 22vw, 420px);
   overflow: hidden;
-  border-radius: 8px;
+  border-radius: 0;
   background: #ffe5d6;
-  box-shadow: var(--shadow);
+  box-shadow: none;
 }
 
 .hero-copy {
   position: relative;
   z-index: 1;
   width: min(48%, 480px);
-  padding: 44px 0 42px 44px;
+  padding: 44px 0 42px var(--page-gutter);
 }
 
 .hero-card img {
@@ -144,15 +145,16 @@ h3 {
 
 .module-grid {
   position: sticky;
-  top: 12px;
+  top: 0;
   z-index: 20;
   display: grid;
   grid-template-columns: repeat(6, minmax(0, 1fr));
   gap: 4px;
-  margin: 14px 0 30px;
+  margin: 0 0 34px;
   padding: 7px;
-  border: 1px solid rgba(220, 229, 223, 0.9);
-  border-radius: 8px;
+  border: 0;
+  border-bottom: 1px solid rgba(220, 229, 223, 0.9);
+  border-radius: 0;
   background: rgba(255, 255, 255, 0.9);
   box-shadow: var(--shadow-soft);
   backdrop-filter: blur(16px);
@@ -226,7 +228,7 @@ h3 {
 
 .feature-card {
   margin-top: 0;
-  padding: 0 0 28px;
+  padding: 0 var(--page-gutter) 40px;
   scroll-margin-top: 92px;
 }
 
@@ -298,8 +300,8 @@ select:focus {
 }
 
 .food-library {
-  margin: 8px 0 20px;
-  padding: 0;
+  margin: 0;
+  padding: 0 var(--page-gutter) 40px;
   background: transparent;
 }
 
@@ -1336,24 +1338,29 @@ select:focus {
 }
 
 @media (max-width: 560px) {
+  :root {
+    --page-gutter: 16px;
+  }
+
   .app-shell {
-    width: calc(100% - 20px);
-    padding: 10px 0 34px;
+    width: 100%;
+    padding: 0 0 30px;
   }
 
   .hero-card {
-    min-height: 220px;
+    min-height: 210px;
+    border-radius: 0;
   }
 
   .hero-copy {
     width: 68%;
-    padding: 28px 0 24px 22px;
+    padding: 28px 0 24px var(--page-gutter);
   }
 
   .feature-card,
   .food-library {
-    padding-right: 0;
-    padding-left: 0;
+    padding-right: var(--page-gutter);
+    padding-left: var(--page-gutter);
   }
 
   h1 {
@@ -1370,6 +1377,7 @@ select:focus {
     grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 4px;
     margin-bottom: 22px;
+    border-radius: 0;
   }
 
   .module-tile {
